@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 const HomePage = lazy(() => import('./component/header/Header'))
 const Drawer = lazy(()=> import ('./component/drawer/Drawer'))
+const Dashboard = lazy(()=> import ('./component/dashboard/Dashboard'))
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/drawer" component={Drawer} />
+          <Route exact path="/dashboard" component={Dashboard} />
         </Switch>
       </Suspense>
     </Router>
