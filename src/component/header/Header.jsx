@@ -1,86 +1,131 @@
-import * as React from 'react';
-import { AppBar, Box, FormGroup,FormControlLabel,Switch,Toolbar,IconButton,Typography,Menu,MenuItem } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { AccountCircle} from "@material-ui/icons"
+import MenuIcon from '@mui/icons-material/Menu';
+import { IconButton, Toolbar, Typography,Divider,List } from "@mui/material"
+import MuiDrawer from '@mui/material/Drawer';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState } from "react"
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiAppBar from '@mui/material/AppBar';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import {mainListItems} from '../listMenu/listItem'
+// import BasicList from '../listMenu/listItem'
 
-export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
+const Header = (props) => {
+    const [open,setOpen] = useState(true)
+    const togleDrawer=()=>(
+        setOpen(!open)
+    )
+    const drawerWidth = 240;
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={auth}
-              onChange={handleChange}
-              aria-label="login switch"
-            />
-          }
-          label={auth ? 'Logout' : 'Login'}
-        />
-      </FormGroup>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
+    const AppBar = styled(MuiAppBar, {
+      shouldForwardProp: (prop) => prop !== 'open',
+    })(({ theme, open }) => ({
+      zIndex: theme.zIndex.drawer + 1,
+      transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      ...(open && {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+      }),
+    }));
+    
+    const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+      ({ theme, open }) => ({
+        '& .MuiDrawer-paper': {
+          position: 'relative',
+          whiteSpace: 'nowrap',
+          width: drawerWidth,
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          boxSizing: 'border-box',
+          ...(!open && {
+            overflowX: 'hidden',
+            transition: theme.transitions.create('width', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen,
+            }),
+            width: theme.spacing(7),
+            [theme.breakpoints.up('sm')]: {
+              width: theme.spacing(9),
+            },
+          }),
+        },
+      }),
+    );
+    
+    const mdTheme = createTheme();
+    return(
+        <ThemeProvider theme={mdTheme}>
+        <Box sx={{display:"flex"}}>
+        <CssBaseline/>
+        <AppBar position="absolute" open={open}>
+          <Toolbar
+            sx={{
+              pr: '24px', // keep right padding when drawer closed
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Photos
-          </Typography>
-          {auth && (
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircleIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
-            </div>
-          )}
-        </Toolbar>
-      </AppBar>
-    </Box>
-  );
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={togleDrawer}
+              sx={{
+                marginRight: '36px',
+                ...(open && { display: 'none' }),
+              }}
+            >
+              <MenuIcon/>
+            </IconButton>
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              {props.title}
+            </Typography>
+            <IconButton color="inherit">
+              <AccountCircle />
+              {/* <Badge badgeContent={4} color="secondary">
+                <NotificationsIcon />
+              </Badge> */}
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer variant="permanent" open={open}>
+          <Toolbar
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              px: [1],
+            }}
+          >
+            <IconButton onClick={togleDrawer}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Toolbar>
+          <Divider />
+          <List>{mainListItems}</List>
+          {/* <List>{BasicList}</List> */}
+          {/* <Divider />
+          <List>{secondaryListItems}</List> */}
+        </Drawer>
+        </Box>
+        </ThemeProvider>
+        
+    )
 }
+
+export default Header
