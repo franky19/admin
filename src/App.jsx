@@ -4,18 +4,22 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-const HomePage = lazy(() => import('./component/header/Header'))
+import Dashboard from './component/dashboard/Dashboard';
+// const HomePage = lazy(() => import('./component/header/Header'))
 const Drawer = lazy(()=> import ('./component/drawer/Drawer'))
-const Dashboard = lazy(()=> import ('./component/dashboard/Dashboard'))
+const dashboardSample = lazy(()=> import ('./component/dashboardSample/Dashboard'))
+const SignUp = lazy (()=>import ('./component/signIn/signIn'))
 
 function App() {
   return (
     <Router>
       <Suspense fallback={<div>Loading...</div>} >
         <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/drawer" component={Drawer} />
-          <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/" component={Dashboard} />
+          <Route path="/drawer" component={Drawer} />
+          <Route path="/dashboardSample" component={dashboardSample} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/signIn" component={SignUp}/>
         </Switch>
       </Suspense>
     </Router>
